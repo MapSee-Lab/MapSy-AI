@@ -6,9 +6,9 @@
 # Traefik 리버스 프록시를 통해 동적 라우팅됩니다.
 #
 # 🚀 사용법:
-#   @suh-lab pr build    - PR 빌드 및 배포 (기존 컨테이너 자동 교체)
-#   @suh-lab pr destroy  - Preview 환경 삭제
-#   @suh-lab pr status   - 현재 상태 확인
+#   @suh-lab server build    - PR 빌드 및 배포 (기존 컨테이너 자동 교체)
+#   @suh-lab server destroy  - Preview 환경 삭제
+#   @suh-lab server status   - 현재 상태 확인
 #
 # ⚙️ 프로젝트별 필수 수정 사항:
 #   아래 env 섹션의 값들을 프로젝트에 맞게 수정하세요.
@@ -104,7 +104,7 @@ jobs:
       is_valid: ${{ steps.parse.outputs.is_valid }}
     steps:
       - name: 댓글에 👀 리액션 추가
-        if: contains(github.event.comment.body, '@suh-lab') && contains(github.event.comment.body, 'pr')
+        if: contains(github.event.comment.body, '@suh-lab') && contains(github.event.comment.body, 'server')
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -121,21 +121,21 @@ jobs:
         run: |
           COMMENT="${{ github.event.comment.body }}"
 
-          if [[ "$COMMENT" =~ @suh-lab[[:space:]]+pr[[:space:]]+build ]]; then
+          if [[ "$COMMENT" =~ @suh-lab[[:space:]]+server[[:space:]]+build ]]; then
             echo "command=build" >> $GITHUB_OUTPUT
             echo "is_valid=true" >> $GITHUB_OUTPUT
             echo "✅ 명령어 감지: build"
-          elif [[ "$COMMENT" =~ @suh-lab[[:space:]]+pr[[:space:]]+destroy ]]; then
+          elif [[ "$COMMENT" =~ @suh-lab[[:space:]]+server[[:space:]]+destroy ]]; then
             echo "command=destroy" >> $GITHUB_OUTPUT
             echo "is_valid=true" >> $GITHUB_OUTPUT
             echo "✅ 명령어 감지: destroy"
-          elif [[ "$COMMENT" =~ @suh-lab[[:space:]]+pr[[:space:]]+status ]]; then
+          elif [[ "$COMMENT" =~ @suh-lab[[:space:]]+server[[:space:]]+status ]]; then
             echo "command=status" >> $GITHUB_OUTPUT
             echo "is_valid=true" >> $GITHUB_OUTPUT
             echo "✅ 명령어 감지: status"
           else
             echo "is_valid=false" >> $GITHUB_OUTPUT
-            echo "ℹ️ @suh-lab pr 명령어가 아님"
+            echo "ℹ️ @suh-lab server 명령어가 아님"
           fi
 
   # -----------------------------------------------------------------
@@ -436,9 +436,9 @@ jobs:
               '### 📋 명령어',
               '| 명령어 | 설명 |',
               '|--------|------|',
-              '| `@suh-lab pr build` | 최신 커밋으로 재배포 |',
-              '| `@suh-lab pr destroy` | Preview 환경 삭제 |',
-              '| `@suh-lab pr status` | 현재 상태 확인 |',
+              '| `@suh-lab server build` | 최신 커밋으로 재배포 |',
+              '| `@suh-lab server destroy` | Preview 환경 삭제 |',
+              '| `@suh-lab server status` | 현재 상태 확인 |',
               '',
               '---',
               '*🤖 이 댓글은 PR Preview 시스템에 의해 자동 생성되었습니다.*'
@@ -501,7 +501,7 @@ jobs:
               '',
               '### 💡 다음 단계',
               '1. 위 링크에서 빌드/배포 로그를 확인하세요',
-              '2. 문제를 수정한 후 다시 시도하세요: `@suh-lab pr build`',
+              '2. 문제를 수정한 후 다시 시도하세요: `@suh-lab server build`',
               '',
               '---',
               '*🤖 이 댓글은 PR Preview 시스템에 의해 자동 생성되었습니다.*'
@@ -594,7 +594,7 @@ jobs:
               `| **컨테이너** | \`${projectName}-pr-${prNumber}\` |`,
               '| **상태** | 삭제됨 |',
               '',
-              '다시 배포하려면: `@suh-lab pr build`',
+              '다시 배포하려면: `@suh-lab server build`',
               '',
               '---',
               '*🤖 이 댓글은 PR Preview 시스템에 의해 자동 생성되었습니다.*'
@@ -689,8 +689,8 @@ jobs:
                 '### 📋 명령어',
                 '| 명령어 | 설명 |',
                 '|--------|------|',
-                '| `@suh-lab pr build` | 최신 커밋으로 재배포 |',
-                '| `@suh-lab pr destroy` | Preview 환경 삭제 |',
+                '| `@suh-lab server build` | 최신 커밋으로 재배포 |',
+                '| `@suh-lab server destroy` | Preview 환경 삭제 |',
                 '',
                 '---',
                 '*🤖 이 댓글은 PR Preview 시스템에 의해 자동 생성되었습니다.*'
@@ -704,7 +704,7 @@ jobs:
                 `| **컨테이너** | \`${projectName}-pr-${prNumber}\` |`,
                 '| **상태** | 🔴 Not Found |',
                 '',
-                '배포하려면: `@suh-lab pr build`',
+                '배포하려면: `@suh-lab server build`',
                 '',
                 '---',
                 '*🤖 이 댓글은 PR Preview 시스템에 의해 자동 생성되었습니다.*'
