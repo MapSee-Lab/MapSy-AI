@@ -144,10 +144,10 @@ jobs:
         id: parse
         env:
           COMMENT: ${{ github.event.comment.body }}
-          IS_PR: ${{ github.event.issue.pull_request }}
+          IS_PR: ${{ github.event.issue.pull_request != null }}
         run: |
           # PR인지 Issue인지 확인
-          if [[ "$IS_PR" != "" ]]; then
+          if [[ "$IS_PR" == "true" ]]; then
             echo "is_pr=true" >> $GITHUB_OUTPUT
             echo "ℹ️ PR 댓글에서 명령어 감지"
           else
