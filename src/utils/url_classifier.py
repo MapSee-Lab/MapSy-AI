@@ -9,8 +9,8 @@ from fastapi import HTTPException
 @dataclass
 class UrlClassification:
     """URL 분류 결과"""
-    platform: str      # "instagram"
-    content_type: str  # "post", "reel", "igtv"
+    platform: str      # "instagram", "youtube"
+    content_type: str  # "post", "reel", "igtv", "video", "shorts"
     url: str
 
 
@@ -44,6 +44,13 @@ def classify_url(url: str) -> UrlClassification:
                 status_code=400,
                 detail=f"지원하지 않는 Instagram URL 형식: {path}"
             )
+
+    # YouTube
+    if 'youtube.com' in domain or 'youtu.be' in domain:
+        if '/shorts/' in path:
+            return UrlClassification("youtube", "shorts", url)
+        else:
+            return UrlClassification("youtube", "video", url)
 
     # 지원하지 않는 플랫폼
     raise HTTPException(
