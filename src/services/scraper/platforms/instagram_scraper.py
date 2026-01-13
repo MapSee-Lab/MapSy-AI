@@ -106,14 +106,15 @@ class InstagramScraper:
 
     async def _extract_carousel_images(self) -> list[str]:
         """
-        캐러셀 슬라이드를 넘기며 모든 이미지 URL 수집
+        캐러셀 슬라이드를 넘기며 모든 이미지 URL 수집 (순서 유지)
 
         Returns:
-            list[str]: 캐러셀 내 모든 이미지 URL
+            list[str]: 캐러셀 내 모든 이미지 URL (게시글 순서대로)
         """
         import asyncio
         page = self.browser_controller.page
-        collected_urls: set[str] = set()
+        collected_urls: list[str] = []  # 순서 유지를 위해 리스트 사용
+        seen_urls: set[str] = set()  # 중복 체크용
 
         # 현재 로드된 이미지 수집 함수
         async def collect_current_images():
@@ -125,7 +126,9 @@ class InstagramScraper:
                 return Array.from(imgs).map(img => img.src).filter(Boolean);
             }''')
             for url in urls:
-                collected_urls.add(url)
+                if url not in seen_urls:
+                    seen_urls.add(url)
+                    collected_urls.append(url)
 
         # 초기 이미지 수집
         await collect_current_images()
@@ -159,21 +162,21 @@ class InstagramScraper:
 
         return list(collected_urls)
 
-    async def extract_instagram_profile_image(self) -> str | None:
+    async def extract_author_profile_image(self) -> str | None:
         """
         Instagram 작성자 프로필 이미지 URL 추출
 
         Returns:
-            str | None: 프로필 이미지 URL 또는 None
+            str | None: 작성자 프로필 이미지 URL 또는 None
         """
-        profile_url = await self.browser_controller.page.evaluate('''() => {
+        author_profile_url = await self.browser_controller.page.evaluate('''() => {
             // 프로필 이미지 셀렉터: alt 속성에 "profile picture" 포함
             const profileImg = document.querySelector('img[alt*="profile picture"]');
             return profileImg ? profileImg.src : null;
         }''')
-        if profile_url:
-            logger.info(f"프로필 이미지 URL 추출 완료")
-        return profile_url
+        if author_profile_url:
+            logger.info("작성자 프로필 이미지 URL 추출 완료")
+        return author_profile_url
 
     async def scrape_instagram_post(self, url: str, classification: UrlClassification) -> dict:
         """
@@ -225,9 +228,9 @@ class InstagramScraper:
                 logger.info("[5/6] 게시글 이미지 URL 추출...")
                 image_urls = await self.extract_instagram_image_urls()
 
-                # [6/6] 프로필 이미지 URL 추출
-                logger.info("[6/6] 프로필 이미지 URL 추출...")
-                profile_image_url = await self.extract_instagram_profile_image()
+                # [6/6] 작성자 프로필 이미지 URL 추출
+                logger.info("[6/6] 작성자 프로필 이미지 URL 추출...")
+                author_profile_image_url = await self.extract_author_profile_image()
 
                 return {
                     "platform": classification.platform,
@@ -241,7 +244,7 @@ class InstagramScraper:
                     "hashtags": parsed_metadata["hashtags"],
                     "og_image": open_graph_metadata.get('image'),
                     "image_urls": image_urls,
-                    "profile_image_url": profile_image_url
+                    "author_profile_image_url": author_profile_image_url
                 }
 
             except HTTPException:
