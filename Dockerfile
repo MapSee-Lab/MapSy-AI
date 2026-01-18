@@ -85,10 +85,10 @@ CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
 #    echo "GOOGLE_API_KEY=your_api_key" > .env
 #
 # 2. Docker 이미지 빌드:
-#    docker build -t mapsee-ai:latest .
+#    docker build -t mapsy:latest .
 #
 # 3. Docker 컨테이너 실행:
-#    docker run -d -p 8000:8000 mapsee-ai:latest
+#    docker run -d -p 8000:8000 mapsy:latest
 #
 # 4. 헬스체크:
 #    curl http://localhost:8000/docs

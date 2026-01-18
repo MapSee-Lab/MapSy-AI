@@ -45,7 +45,7 @@ on:
 # ===================================================================
 env:
   # 🔧 프로젝트 설정
-  PROJECT_NAME: "mapsee-ai"
+  PROJECT_NAME: "mapsy"
   PROJECT_MAIN_PORT: "8092"
 
   # 🐍 Python 설정
@@ -226,7 +226,7 @@ jobs:
               --name $CONTAINER_NAME \
               -e TZ=Asia/Seoul \
               -v /etc/localtime:/etc/localtime:ro \
-              -v /volume1/projects/mapsee/ai:/mnt/mapsee \
+              -v /volume1/projects/mapsy/ai:/mnt/mapsy \
               ${{ secrets.DOCKERHUB_USERNAME }}/${PROJECT_NAME}:${BRANCH}
 
             # ============================================================

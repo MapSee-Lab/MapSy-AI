@@ -27,7 +27,7 @@ on:
 # ===================================================================
 env:
   # 🔧 프로젝트 설정
-  PROJECT_NAME: "mapsee-ai"
+  PROJECT_NAME: "mapsy"
 
   # 🐍 Python 설정
   PYTHON_VERSION: "3.13"

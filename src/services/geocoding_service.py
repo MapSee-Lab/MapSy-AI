@@ -76,7 +76,7 @@ async def geocode_with_nominatim(address: str) -> GeocodingResult:
 
     url = "https://nominatim.openstreetmap.org/search"
     params = {"q": address, "format": "json", "limit": 1}
-    headers = {"User-Agent": "MapSee-AI/1.0"}
+    headers = {"User-Agent": "MapSy/1.0"}
 
     data = await http_get_json(url, params=params, headers=headers)
 

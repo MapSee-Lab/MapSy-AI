@@ -41,11 +41,11 @@ def setup_logging(log_level: str = "INFO", log_file: str = "logs/app.log"):
 
     if environment == 'prod':
         # 프로덕션 환경: 파일 로그 저장
-        log_dir = Path('/mnt/mapsee/ai/logs')
+        log_dir = Path('/mnt/mapsy/ai/logs')
         log_dir.mkdir(parents=True, exist_ok=True)
 
         # 일반 로그 파일 핸들러 (모든 레벨)
-        general_log_file = log_dir / 'mapsee-ai.log'
+        general_log_file = log_dir / 'mapsy.log'
         general_handler = TimedRotatingFileHandler(
             filename=str(general_log_file),
             when='midnight',
@@ -57,7 +57,7 @@ def setup_logging(log_level: str = "INFO", log_file: str = "logs/app.log"):
         root_logger.addHandler(general_handler)
 
         # 에러 로그 파일 핸들러 (ERROR 이상만)
-        error_log_file = log_dir / 'mapsee-ai.error.log'
+        error_log_file = log_dir / 'mapsy.error.log'
         error_handler = TimedRotatingFileHandler(
             filename=str(error_log_file),
             when='midnight',
