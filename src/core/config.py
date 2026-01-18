@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     BACKEND_API_KEY: str
     ENVIRONMENT: str = "dev"  # dev: 로컬, prod: 서버환경
 
+    # 카카오 API
+    KAKAO_REST_API_KEY: str
+
     # SMB 설정
     SMB_HOST: str = ""
     SMB_PORT: int = 445
@@ -22,5 +25,5 @@ class Settings(BaseSettings):
     SMB_REMOTE_DIR: str = ""  # 원격 디렉토리 경로 (예: "romrom/images")
     SMB_DOMAIN: str = ""  # 도메인 (선택적)
 
-    model_config = SettingsConfigDict(env_file=".env")
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 settings = Settings()

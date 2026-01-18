@@ -96,6 +96,53 @@ URL → sns_router → get_audio → get_transcription (STT) → get_video_narra
 - `ocrText`: 비디오 텍스트 (현재 비활성화)
 - `result`: 최종 추출된 장소들
 
+## 공통 유틸리티 사용 가이드
+
+새로운 기능 구현 시 `src/utils/common.py`의 공통 함수를 우선 사용합니다.
+
+### HTTP 요청 (외부 API 호출)
+
+외부 API 호출 시 반드시 `http_get_json()` 사용:
+
+```python
+from src.utils.common import http_get_json
+
+# ✅ 올바른 사용
+data = await http_get_json(
+    url="https://api.example.com/data",
+    params={"query": "value"},
+    headers={"Authorization": "Bearer token"},
+    timeout=10.0  # 기본 10초
+)
+
+# ❌ 직접 httpx 사용 금지
+async with httpx.AsyncClient() as client:
+    response = await client.get(url)  # 타임아웃, 예외처리 누락 위험
+```
+
+**장점**:
+- 타임아웃 자동 적용 (기본 10초)
+- 예외 처리 일관성 (TimeoutException, HTTPStatusError, RequestError)
+- CustomError로 변환되어 API 레이어에서 처리 용이
+
+### API Key 검증
+
+```python
+from src.utils.common import verify_api_key
+from fastapi import Depends
+
+@router.post("/endpoint")
+async def endpoint(api_key: str = Depends(verify_api_key)):
+    # X-API-Key 헤더 자동 검증
+```
+
+### 기타 유틸리티
+
+- `validate_url_length()`: URL 길이 검증
+- `mask_sensitive_data()`: 로그 출력 시 민감 데이터 마스킹
+- `convert_to_bytesio()`: bytes/BytesIO 타입 변환
+- `validate_image_stream()`: 이미지 스트림 유효성 검증
+
 ## 설정
 
 `.env`에 필요한 환경 변수:
@@ -104,6 +151,7 @@ URL → sns_router → get_audio → get_transcription (STT) → get_video_narra
 - `YOUTUBE_API_KEY`: YouTube Data API 키
 - `INSTAGRAM_POST_DOC_ID`, `INSTAGRAM_APP_ID`: Instagram API 설정
 - `BACKEND_CALLBACK_URL`, `BACKEND_API_KEY`: 콜백 엔드포인트 설정
+- `KAKAO_REST_API_KEY`: 카카오 로컬 API 키 (Geocoding 용)
 - `SMB_*`: SMB 파일 서버 설정 (선택사항)
 
 ## 참고사항

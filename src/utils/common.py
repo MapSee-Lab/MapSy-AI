@@ -3,9 +3,13 @@
 """
 import logging
 from io import BytesIO
-from typing import Union
+from typing import Union, Any
+
+import httpx
 from fastapi import Header, HTTPException
+
 from src.core.config import settings
+from src.core.exceptions import CustomError
 
 logger = logging.getLogger(__name__)
 
@@ -43,10 +47,55 @@ def validate_url_length(url: str, max_length: int = 2048) -> None:
     Raises:
         CustomError: URL 길이 초과 시
     """
-    from src.core.exceptions import CustomError
-
     if len(url) > max_length:
         raise CustomError(f"URL 길이가 {max_length}자를 초과했습니다")
+
+
+# ============================================================
+# HTTP 클라이언트 유틸리티
+# ============================================================
+
+DEFAULT_HTTP_TIMEOUT = 10.0  # 기본 타임아웃 (초)
+
+
+async def http_get_json(
+    url: str,
+    params: dict[str, Any] | None = None,
+    headers: dict[str, str] | None = None,
+    timeout: float = DEFAULT_HTTP_TIMEOUT
+) -> dict[str, Any]:
+    """
+    HTTP GET 요청 후 JSON 응답 반환
+
+    Args:
+        url: 요청 URL
+        params: 쿼리 파라미터
+        headers: 요청 헤더
+        timeout: 타임아웃 (초, 기본 10초)
+
+    Returns:
+        dict: JSON 응답
+
+    Raises:
+        CustomError: 요청 실패 또는 응답 오류 시
+    """
+    try:
+        async with httpx.AsyncClient(timeout=timeout) as client:
+            response = await client.get(url, params=params, headers=headers)
+            response.raise_for_status()
+            return response.json()
+
+    except httpx.TimeoutException:
+        logger.error(f"HTTP 요청 타임아웃: url={url}")
+        raise CustomError(f"요청 시간이 초과되었습니다 ({timeout}초)")
+
+    except httpx.HTTPStatusError as error:
+        logger.error(f"HTTP 응답 오류: status={error.response.status_code}, url={url}")
+        raise CustomError(f"API 오류: {error.response.status_code}")
+
+    except httpx.RequestError as error:
+        logger.error(f"HTTP 연결 실패: url={url}, error={error}")
+        raise CustomError("API 연결에 실패했습니다")
 
 
 def mask_sensitive_data(data: str, show_chars: int = 2) -> str:

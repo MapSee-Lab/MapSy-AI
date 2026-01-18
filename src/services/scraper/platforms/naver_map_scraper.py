@@ -19,6 +19,7 @@ from src.services.scraper.common_util import (
     MAX_IMAGE_COUNT,
 )
 from src.models.naver_place_info import NaverPlaceInfo
+from src.services.geocoding_service import geocode_with_fallback
 
 logger = logging.getLogger(__name__)
 
@@ -350,8 +351,20 @@ class NaverMapScraper:
                     except (TypeError, ValueError):
                         longitude = None
 
-                # [7/7] NaverPlaceInfo 생성
-                logger.info(f"[7/7] 스크래핑 완료 (좌표: {latitude}, {longitude})")
+                # [7/8] 좌표 없으면 Geocoding으로 보완
+                address_for_geocoding = info.get('address') or info.get('road_address')
+                if (latitude is None or longitude is None) and address_for_geocoding:
+                    logger.info(f"[7/8] 좌표 없음, Geocoding 시도: address='{address_for_geocoding}'")
+                    geocoding_result = await geocode_with_fallback(address_for_geocoding)
+                    if geocoding_result:
+                        latitude = geocoding_result.latitude
+                        longitude = geocoding_result.longitude
+                        logger.info(f"[7/8] Geocoding 성공 ({geocoding_result.provider}): lat={latitude}, lon={longitude}")
+                    else:
+                        logger.warning("[7/8] Geocoding 실패, 좌표 null 유지")
+
+                # [8/8] NaverPlaceInfo 생성
+                logger.info(f"[8/8] 스크래핑 완료 (좌표: {latitude}, {longitude})")
 
                 return NaverPlaceInfo(
                     place_id=place_id,
