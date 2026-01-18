@@ -2,12 +2,22 @@
 테스트 API 라우터 - SNS 스크래핑 테스트용
 """
 import logging
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
 from src.services.scraper.scrape_router import route_and_scrape
 from src.services.scraper.platforms.naver_map_scraper import NaverMapScraper
 from src.services.scraper.platforms.google_map_scraper import GoogleMapScraper
+from src.models.geocoding_models import (
+    GeocodingTestRequest,
+    GeocodingResponse,
+    GeocodingProvider
+)
+from src.services.geocoding_service import (
+    geocode_with_kakao,
+    geocode_with_nominatim
+)
+from src.core.exceptions import CustomError
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/test", tags=["테스트 API"])
@@ -103,3 +113,32 @@ async def scrape_google_map(request: GoogleMapSearchRequest):
 
     logger.info(f"스크래핑 완료: {result.name} ({result.place_id})")
     return result
+
+
+@router.post("/geocode", response_model=GeocodingResponse, status_code=200)
+async def test_geocode(request: GeocodingTestRequest):
+    """
+    주소를 위도/경도로 변환 (테스트용 - provider 선택 가능)
+
+    - POST /api/test/geocode
+    - Body: {"address": "서울시 강남구", "provider": "kakao"}
+    - provider: "kakao" (기본) | "nominatim"
+    - 성공: 200 + GeocodingResponse
+    - 실패: 404 (주소 못 찾음)
+    """
+    logger.info(f"Geocoding 테스트 요청: address='{request.address}', provider='{request.provider.value}'")
+
+    try:
+        if request.provider == GeocodingProvider.KAKAO:
+            result = await geocode_with_kakao(request.address)
+        else:
+            result = await geocode_with_nominatim(request.address)
+
+        return GeocodingResponse(
+            address=request.address,
+            latitude=result.latitude,
+            longitude=result.longitude,
+            provider=result.provider
+        )
+    except CustomError as error:
+        raise HTTPException(status_code=404, detail=error.message)
