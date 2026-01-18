@@ -45,7 +45,7 @@ on:
 # ===================================================================
 env:
   # 🔧 프로젝트 설정
-  PROJECT_NAME: "mapsy"
+  PROJECT_NAME: "mapsy-ai"
   PROJECT_MAIN_PORT: "8092"
 
   # 🐍 Python 설정
