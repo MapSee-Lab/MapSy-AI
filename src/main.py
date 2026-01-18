@@ -36,8 +36,8 @@ async def lifespan(app: FastAPI):
 
 # FastAPI 앱 생성 (lifespan 컨텍스트 적용)
 app = FastAPI(
-    title="MapSee AI Processor",
-    description="MapSee의 SNS 콘텐츠 데이터 추출 파이프라인입니다.",
+    title="MapSy AI Processor",
+    description="MapSy의 SNS 콘텐츠 데이터 추출 파이프라인입니다.",
     version="0.0.2",
     lifespan=lifespan,
     docs_url="/docs/swagger",

@@ -1,11 +1,35 @@
 {
   "metadata": {
-    "lastUpdated": "2026-01-18T12:51:13Z",
-    "currentVersion": "1.0.2",
+    "lastUpdated": "2026-01-18T15:27:46Z",
+    "currentVersion": "1.0.3",
     "projectType": "python",
-    "totalReleases": 7
+    "totalReleases": 8
   },
   "releases": [
+    {
+      "version": "1.0.3",
+      "project_type": "python",
+      "date": "2026-01-18",
+      "pr_number": 18,
+      "raw_summary": "## Summary by CodeRabbit\n\n## 릴리즈 노트\n\n* **Chores**\n  * 프로젝트명을 \"MapSee-AI\"에서 \"MapSy\"로 업데이트했습니다.\n  * 빌드 및 배포 설정을 새 프로젝트명에 맞게 조정했습니다.\n  * API 애플리케이션 메타데이터 및 사용자 식별 정보를 업데이트했습니다.\n\n* **Version**\n  * v1.0.3으로 버전을 업그레이드했습니다.",
+      "parsed_changes": {
+        "chores": {
+          "title": "Chores",
+          "items": [
+            "프로젝트명을 \"MapSee-AI\"에서 \"MapSy\"로 업데이트했습니다.",
+            "빌드 및 배포 설정을 새 프로젝트명에 맞게 조정했습니다.",
+            "API 애플리케이션 메타데이터 및 사용자 식별 정보를 업데이트했습니다."
+          ]
+        },
+        "version": {
+          "title": "Version",
+          "items": [
+            "v1.0.3으로 버전을 업그레이드했습니다."
+          ]
+        }
+      },
+      "parse_method": "markdown"
+    },
     {
       "version": "1.0.2",
       "project_type": "python",

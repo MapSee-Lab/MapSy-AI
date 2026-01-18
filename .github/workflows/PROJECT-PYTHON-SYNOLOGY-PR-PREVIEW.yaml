@@ -47,7 +47,7 @@
 #   - Providers: Docker 프로바이더 상태
 #
 #   배포 후 대시보드에서 새로운 Router/Service가 추가되었는지 확인할 수 있습니다.
-#   예: Router "mapsee-ai-pr-123" → Service "mapsee-ai-pr-123"
+#   예: Router "mapsy-pr-123" → Service "mapsy-pr-123"
 #
 # 📊 리소스 네이밍 규칙:
 #   - 컨테이너: {PROJECT_NAME}-pr-{PR번호}
@@ -64,7 +64,7 @@ name: PROJECT-PYTHON-SYNOLOGY-PR-PREVIEW
 # ===================================================================
 env:
   # 프로젝트 고유 식별자 (컨테이너명, 이미지명, 도메인에 사용)
-  PROJECT_NAME: mapsee-ai
+  PROJECT_NAME: mapsy
 
   # Docker 설정
   DOCKERFILE_PATH: './Dockerfile'

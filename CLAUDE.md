@@ -4,7 +4,7 @@
 
 ## 프로젝트 개요
 
-MapSee-AI는 Python 기반의 SNS 콘텐츠 데이터 추출 파이프라인입니다. Instagram과 YouTube 콘텐츠를 처리하여 장소/위치 정보를 추출합니다. FastAPI 서비스로 URL을 받아 미디어 콘텐츠를 다운로드하고, 음성-텍스트 변환(STT)을 수행한 뒤, LLM(Gemini)을 사용하여 구조화된 장소 데이터를 추출합니다.
+MapSy는 Python 기반의 SNS 콘텐츠 데이터 추출 파이프라인입니다. Instagram과 YouTube 콘텐츠를 처리하여 장소/위치 정보를 추출합니다. FastAPI 서비스로 URL을 받아 미디어 콘텐츠를 다운로드하고, 음성-텍스트 변환(STT)을 수행한 뒤, LLM(Gemini)을 사용하여 구조화된 장소 데이터를 추출합니다.
 
 ## 개발 명령어
 
