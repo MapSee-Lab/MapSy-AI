@@ -1,5 +1,8 @@
 """src.models.place_extraction_dict
 장소 추출 데이터 스키마
+
+DEPRECATED: 이 모듈은 더 이상 사용되지 않습니다.
+새로운 장소 상세 정보 모델은 src.models.callback_request.PlaceDetailCallback을 사용하세요.
 """
 from pydantic import BaseModel, Field
 from typing import Optional

@@ -1,5 +1,8 @@
 """src.models.content_info
 콘텐츠 정보 DTO
+
+DEPRECATED: 이 모듈은 더 이상 사용되지 않습니다.
+새로운 콜백 모델은 src.models.callback_request.SnsInfoCallback을 사용하세요.
 """
 from pydantic import BaseModel, Field
 from uuid import UUID

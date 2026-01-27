@@ -2,6 +2,11 @@
 인스타그램 릴스 게시물 처리 파이프라인입니다.
 
 NOTE: OCR 기능은 제거되었습니다. 별도로 구현 예정입니다.
+
+DEPRECATED: 이 모듈은 더 이상 사용되지 않습니다.
+새로운 통합 워크플로우는 src.services.integrated_workflow를 사용하세요.
+기존 파이프라인: URL → yt-dlp → 오디오 추출 → STT → Gemini LLM
+새 파이프라인: URL → Playwright 스크래핑 → Ollama LLM → 네이버 지도 검색
 """
 import logging
 from urllib.parse import urlparse
