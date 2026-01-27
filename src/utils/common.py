@@ -56,6 +56,7 @@ def validate_url_length(url: str, max_length: int = 2048) -> None:
 # ============================================================
 
 DEFAULT_HTTP_TIMEOUT = 10.0  # 기본 타임아웃 (초)
+OLLAMA_HTTP_TIMEOUT = 120.0  # Ollama API 타임아웃 (2분, 긴 텍스트 처리)
 
 
 async def http_get_json(
@@ -95,6 +96,46 @@ async def http_get_json(
 
     except httpx.RequestError as error:
         logger.error(f"HTTP 연결 실패: url={url}, error={error}")
+        raise CustomError("API 연결에 실패했습니다")
+
+
+async def http_post_json(
+    url: str,
+    json_body: dict[str, Any],
+    headers: dict[str, str] | None = None,
+    timeout: float = OLLAMA_HTTP_TIMEOUT
+) -> dict[str, Any]:
+    """
+    HTTP POST 요청 후 JSON 응답 반환
+
+    Args:
+        url: 요청 URL
+        json_body: 요청 바디 (JSON)
+        headers: 요청 헤더
+        timeout: 타임아웃 (초, 기본 120초 - Ollama용)
+
+    Returns:
+        dict: JSON 응답
+
+    Raises:
+        CustomError: 요청 실패 또는 응답 오류 시
+    """
+    try:
+        async with httpx.AsyncClient(timeout=timeout) as client:
+            response = await client.post(url, json=json_body, headers=headers)
+            response.raise_for_status()
+            return response.json()
+
+    except httpx.TimeoutException:
+        logger.error(f"HTTP POST 요청 타임아웃: url={url}")
+        raise CustomError(f"요청 시간이 초과되었습니다 ({timeout}초)")
+
+    except httpx.HTTPStatusError as error:
+        logger.error(f"HTTP POST 응답 오류: status={error.response.status_code}, url={url}")
+        raise CustomError(f"API 오류: {error.response.status_code}")
+
+    except httpx.RequestError as error:
+        logger.error(f"HTTP POST 연결 실패: url={url}, error={error}")
         raise CustomError("API 연결에 실패했습니다")
 
 
