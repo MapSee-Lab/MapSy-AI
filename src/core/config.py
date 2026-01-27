@@ -16,6 +16,11 @@ class Settings(BaseSettings):
     # 카카오 API
     KAKAO_REST_API_KEY: str
 
+    # Ollama API (ai.suhsaechan.kr)
+    OLLAMA_API_URL: str = "https://ai.suhsaechan.kr/api/chat"
+    OLLAMA_API_KEY: str = ""
+    OLLAMA_MODEL: str = "gemma3:1b-it-qat"
+
     # SMB 설정
     SMB_HOST: str = ""
     SMB_PORT: int = 445

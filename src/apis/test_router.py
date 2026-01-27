@@ -17,6 +17,7 @@ from src.services.geocoding_service import (
     geocode_with_kakao,
     geocode_with_nominatim
 )
+from src.services.modules.ollama_llm import extract_place_names_with_ollama, OllamaPlaceResult
 from src.core.exceptions import CustomError
 
 logger = logging.getLogger(__name__)
@@ -35,6 +36,11 @@ class NaverMapSearchRequest(BaseModel):
 class GoogleMapSearchRequest(BaseModel):
     """구글 지도 검색 요청"""
     query: str = Field(..., description="검색어 (예: 늘푸른목장)", min_length=1)
+
+
+class LlmPlaceExtractRequest(BaseModel):
+    """LLM 장소명 추출 요청"""
+    caption: str = Field(..., description="인스타그램 게시물 본문 텍스트", min_length=1)
 
 
 @router.post("/scrape", status_code=200)
@@ -142,3 +148,29 @@ async def test_geocode(request: GeocodingTestRequest):
         )
     except CustomError as error:
         raise HTTPException(status_code=404, detail=error.message)
+
+
+@router.post("/llm-place-extract", response_model=OllamaPlaceResult, status_code=200)
+async def extract_place_names(request: LlmPlaceExtractRequest):
+    """
+    Ollama LLM을 사용하여 텍스트에서 장소명을 추출
+
+    인스타그램 caption에서 장소명(가게명, 상호명, 식당명 등)을 추출합니다.
+    ai.suhsaechan.kr의 gemma3:1b-it-qat 모델을 사용합니다.
+
+    - POST /api/test/llm-place-extract
+    - Body: {"caption": "1. #스시호 -위치_서울 송파구 가락로 98길..."}
+    - 성공: 200 + {"place_names": ["스시호", ...], "has_places": true}
+    - 실패 시에도 빈 결과 반환 (에러 발생하지 않음)
+
+    추출 규칙:
+    - 해시태그(#) 붙은 장소명도 추출 (#스시호 → 스시호)
+    - 일반 명사(맛집, 초밥 등)는 제외
+    - 장소가 없으면 빈 배열 반환
+    """
+    logger.info(f"LLM 장소명 추출 요청: caption 길이={len(request.caption)}")
+
+    result = await extract_place_names_with_ollama(request.caption)
+
+    logger.info(f"장소명 추출 완료: {result.place_names}")
+    return result
